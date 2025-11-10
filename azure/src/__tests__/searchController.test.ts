@@ -1,15 +1,18 @@
 import { Request, Response } from 'express';
 import { SearchController } from '../controllers/searchController';
 import { SearchService } from '../services/searchService';
+import { ExportService } from '../services/exportService';
 import { AuthRequest } from '../middleware/auth';
 import { UserRole } from '../types';
 
-// Mock the SearchService
+// Mock the SearchService and ExportService
 jest.mock('../services/searchService');
+jest.mock('../services/exportService');
 
 describe('SearchController', () => {
   let searchController: SearchController;
   let mockSearchService: jest.Mocked<SearchService>;
+  let mockExportService: jest.Mocked<ExportService>;
   let mockRequest: Partial<AuthRequest>;
   let mockResponse: Partial<Response>;
 
@@ -19,7 +22,11 @@ describe('SearchController', () => {
       semanticSearch: jest.fn(),
     } as any;
 
-    searchController = new SearchController(mockSearchService);
+    mockExportService = {
+      exportToCSV: jest.fn(),
+    } as any;
+
+    searchController = new SearchController(mockSearchService, mockExportService);
 
     mockRequest = {
       query: {},
